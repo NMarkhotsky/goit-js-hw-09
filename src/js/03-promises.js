@@ -7,20 +7,16 @@ formRef.addEventListener('submit', onFormSubmit);
 function onFormSubmit(e) {
   e.preventDefault();
 
-  const delay = Number(this.delay.value);
+  let delay = Number(this.delay.value);
   const step = Number(this.step.value);
   const amount = Number(this.amount.value);
-  let position = 0;
-  let differenceStep = delay - step;
 
-  const promiseId = setInterval(() => {
-    position += 1;
-    differenceStep += step;
+  for (let i = 1; i <= amount; i += 1) {
+    createPromise(i, delay).then(onResolve).catch(onReject);
+    delay += step;
+  }
 
-    createPromise(position, differenceStep).then(onResolve).catch(onReject);
-
-    if (amount === position) clearInterval(promiseId);
-  }, step);
+  e.currentTarget.reset();
 }
 
 function createPromise(position, delay) {
